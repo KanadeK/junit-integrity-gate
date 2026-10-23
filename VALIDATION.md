@@ -9,7 +9,7 @@ Python 3.13.16 was used for developer scripts and report generators only.
   17 independent CLI groups, actual exits, JSON counters, privacy sentinels,
   oversized reports and input-byte preservation.
 - Combined application statement coverage was **90.8%** with
-  `go test -count=1 -coverpkg=./... -coverprofile=coverage.out ./...`.
+  `go test -count=1 '-coverpkg=./...' '-coverprofile=coverage.out' ./...`.
   Separately built external CLI processes are exercised but not included in
   that cover profile. The CI floor is 80%; coverage is not a correctness proof.
 - A real five-second `FuzzXML` run with two workers completed without failure

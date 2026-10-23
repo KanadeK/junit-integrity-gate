@@ -11,7 +11,7 @@ scripts. The application itself needs no Python or external modules.
 ```sh
 python scripts/check_format.py
 go vet ./...
-go test -count=1 -coverpkg=./... -coverprofile=coverage.out ./...
+go test -count=1 '-coverpkg=./...' '-coverprofile=coverage.out' ./...
 python scripts/check_coverage.py
 python scripts/build_release.py --host-only
 python scripts/installed_smoke.py
@@ -29,6 +29,8 @@ go test ./internal/gate -run='^$' -fuzz=FuzzXML -fuzztime=5s -parallel=2
 The repository enforces LF source line endings through `.gitattributes`,
 including on Windows checkouts with `core.autocrlf=true`, so gofmt sees the
 same input on every tested platform.
+Keep quotes around flags containing `=` and a dotted value: PowerShell can
+otherwise split them into separate native arguments.
 
 For real producer tests, install the test-only requirements in a virtual
 environment and run against a built binary:
