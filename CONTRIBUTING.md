@@ -20,6 +20,15 @@ python scripts/installed_smoke.py
 The coverage floor is 80% of statements. Coverage complements independently
 specified fixtures and complete CLI workflows; it is not a correctness proof.
 Build all four binary archives with `python scripts/build_release.py`.
+To reproduce the bounded local fuzz session:
+
+```sh
+go test ./internal/gate -run='^$' -fuzz=FuzzXML -fuzztime=5s -parallel=2
+```
+
+The repository enforces LF source line endings through `.gitattributes`,
+including on Windows checkouts with `core.autocrlf=true`, so gofmt sees the
+same input on every tested platform.
 
 For real producer tests, install the test-only requirements in a virtual
 environment and run against a built binary:
