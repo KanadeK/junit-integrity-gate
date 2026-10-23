@@ -1,0 +1,5 @@
+<testsuites tests="1" failures="0" errors="0" skipped="0">
+  <testsuite name="example shard two" tests="1">
+    <testcase classname="demo.Validation" name="accepts record [unicode]"/>
+  </testsuite>
+</testsuites>

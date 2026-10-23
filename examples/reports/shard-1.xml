@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="example shard one" tests="2" failures="0" errors="0" skipped="1">
+  <testcase classname="demo.Validation" name="accepts record [plain]"/>
+  <testcase classname="demo.Validation" name="optional integration"><skipped message="synthetic example"/></testcase>
+</testsuite>

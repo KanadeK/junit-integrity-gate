@@ -1,0 +1,11 @@
+/dist/
+/build/
+/.venv/
+.ruff_cache/
+/coverage.out
+/coverage-*.out
+/junit-integrity-gate
+/junit-integrity-gate.exe
+__pycache__/
+*.pyc
+.DS_Store

@@ -1,0 +1,62 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.27.3'
+          cache: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - run: python scripts/check_format.py
+      - run: go version
+      - run: go vet ./...
+      - run: go test -count=1 -coverpkg=./... -coverprofile=coverage.out ./...
+      - run: python scripts/check_coverage.py
+      - run: python scripts/build_release.py --host-only
+      - run: python scripts/installed_smoke.py
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+      - run: go build -trimpath -buildvcs=false -o build/ ./cmd/junit-integrity-gate
+      - name: Real producer acceptance
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            python acceptance/producer_smoke.py --binary build/junit-integrity-gate.exe
+          else
+            python acceptance/producer_smoke.py --binary build/junit-integrity-gate
+          fi
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.27.3'
+          cache: false
+      - run: go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+      - run: govulncheck ./...
+      - run: go build -trimpath -buildvcs=false -o build/ ./cmd/junit-integrity-gate
+      - run: govulncheck -mode=binary build/junit-integrity-gate
+# CI only reads, tests and builds. It never creates commits or updates branches.

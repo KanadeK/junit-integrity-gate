@@ -1,0 +1,3 @@
+# Test-only report producers; the Go command has no Python runtime dependency.
+pytest==9.1.1
+unittest-xml-reporting==4.0.0
